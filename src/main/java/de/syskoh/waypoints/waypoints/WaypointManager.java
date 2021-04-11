@@ -1,6 +1,7 @@
 package de.syskoh.waypoints.waypoints;
 
 import de.syskoh.waypoints.Waypoints;
+import de.syskoh.waypoints.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -40,6 +41,7 @@ public class WaypointManager implements Listener {
 
     /**
      * Loads the UserWaypoints from the config file
+     *
      * @param event PlayerJoinEvent
      */
     @EventHandler
@@ -50,6 +52,7 @@ public class WaypointManager implements Listener {
 
     /**
      * Saves the user's waypoints and destroys them
+     *
      * @param event PlayerQuitEvent
      */
     @EventHandler
@@ -64,6 +67,7 @@ public class WaypointManager implements Listener {
 
     /**
      * Fires if a player starts or stops sneaking
+     *
      * @param e PLayerToggleSneakEvent
      */
 
@@ -90,14 +94,9 @@ public class WaypointManager implements Listener {
         } else {
 
             // If the player is not holding the WaypointItem in either hand, return
-            if (
-                    !inv.getItemInMainHand().equals(Waypoints.getInstance().getWaypointItem())
-                            & !inv.getItemInOffHand().equals(Waypoints.getInstance().getWaypointItem())) {
-
+            if (!Util.isPlayerHoldingWaypointItem(p)) {
                 return;
             }
-
-
 
             UserWaypoints uw = getUserWaypoints(p);
             assert uw != null;
@@ -118,21 +117,31 @@ public class WaypointManager implements Listener {
                 //armorStandDisplayLabel.teleport(p.getLocation().add(vec));
 
 
-                ArmorStand armorStandDisplayItem = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(vec.multiply(1.2)).add(0,1.55, 0), EntityType.ARMOR_STAND);
+                ArmorStand armorStandDisplayItem = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(vec.clone().multiply(1.2)).add(0, 1.55, 0), EntityType.ARMOR_STAND);
                 armorStandDisplayItem.setInvisible(true);
                 armorStandDisplayItem.setGravity(false);
                 armorStandDisplayItem.setSmall(true);
                 armorStandDisplayItem.getEquipment().setHelmet(waypoint.getStack());
                 armorStandDisplayItem.setInvulnerable(true);
 
+
+                ArmorStand armorStandDisplayDistance = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(vec).add(0, -0.3, 0), EntityType.ARMOR_STAND);
+                armorStandDisplayDistance.setInvisible(true);
+                armorStandDisplayDistance.setCustomName((double) ((int) waypoint.getLocation().toVector().distance(p.getLocation().toVector()) * 100) / 100 + "m");
+                armorStandDisplayDistance.setCustomNameVisible(true);
+                armorStandDisplayDistance.setGravity(false);
+                armorStandDisplayDistance.setInvulnerable(true);
+
+
                 waypointArmorStands.put(armorStandDisplayLabel, p.getName());
                 waypointArmorStands.put(armorStandDisplayItem, p.getName());
+                waypointArmorStands.put(armorStandDisplayDistance, p.getName());
 
             }
         }
     }
 
-    public void removeAllArmorstandWaypoints(){
+    public void removeAllArmorstandWaypoints() {
         for (ArmorStand armorStand : waypointArmorStands.keySet()) {
             armorStand.remove();
         }

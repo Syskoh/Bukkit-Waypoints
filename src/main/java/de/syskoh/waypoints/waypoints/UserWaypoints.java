@@ -112,12 +112,16 @@ public class UserWaypoints {
         w.saveConfig();
     }
 
+
+    public void addUserWaypoint(String label, Location loc, Material material){
+        waypoints.add(new Waypoint(label, loc, new ItemStack(material)));
+        saveWaypoints();
+    }
+
     /**
      * Returns the player
-     *
      * @return The player
      */
-
     public Player getPlayer() {
         return player;
     }

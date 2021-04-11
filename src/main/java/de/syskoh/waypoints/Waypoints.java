@@ -1,6 +1,8 @@
 package de.syskoh.waypoints;
 
 import de.syskoh.waypoints.commands.GiveWaypointManager;
+import de.syskoh.waypoints.inventories.MainMenu;
+import de.syskoh.waypoints.inventories.MenuManager;
 import de.syskoh.waypoints.waypoints.WaypointManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,16 +23,25 @@ public final class Waypoints extends JavaPlugin {
 
     private static Waypoints instance;
     private ItemStack waypointItem;
-    private final WaypointManager waypointManager = new WaypointManager();
+    private WaypointManager waypointManager;
+    private MenuManager menuManager;
+    private MainMenu mainMenu;
 
 
     @Override
     public void onEnable() {
         instance = this;
-        getServer().getPluginManager().registerEvents(waypointManager, this);
-        getCommand("gw").setExecutor(new GiveWaypointManager());
         prepareItem();
 
+        waypointManager = new WaypointManager();
+        menuManager = new MenuManager();
+        mainMenu = new MainMenu();
+
+        getServer().getPluginManager().registerEvents(waypointManager, this);
+        getServer().getPluginManager().registerEvents(menuManager, this);
+        getServer().getPluginManager().registerEvents(mainMenu, this);
+
+        getCommand("gw").setExecutor(new GiveWaypointManager());
 
         // Loads the waypoints for all users incase the server did a reload
         waypointManager.reloadUser();
@@ -66,6 +77,18 @@ public final class Waypoints extends JavaPlugin {
         Bukkit.addRecipe(recipe);
 
 
+    }
+
+    public MenuManager getMenuManager() {
+        return menuManager;
+    }
+
+    public WaypointManager getWaypointManager() {
+        return waypointManager;
+    }
+
+    public MainMenu getMainMenu() {
+        return mainMenu;
     }
 
     public ItemStack getWaypointItem() {
