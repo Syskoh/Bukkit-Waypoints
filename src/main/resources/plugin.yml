@@ -1,0 +1,11 @@
+name: Waypoints
+version: @version@
+main: de.syskoh.waypoints.Waypoints
+api-version: 1.16
+prefix: Waypoints
+load: STARTUP
+authors: [ Syskoh ]
+description: Adds a waypoint system to the server
+
+commands:
+  gw:
