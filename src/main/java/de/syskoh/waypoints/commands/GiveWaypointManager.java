@@ -12,14 +12,21 @@ import org.bukkit.entity.Player;
 
 public class GiveWaypointManager implements CommandExecutor {
 
+    public GiveWaypointManager() {
+        Waypoints.getInstance().getConfig().addDefault("NoPermission", "§cYou do not have permission to use this command");
+        Waypoints.getInstance().getConfig().options().copyDefaults(true);
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player){
             Player p = (Player) sender;
 
-            if(!p.isOp()){
+            if(!p.hasPermission("waypoints.give")){
+                p.sendMessage("§cYou do not have permission to use this command");
                 return true;
             }
+
             p.getInventory().addItem(Waypoints.getInstance().getWaypointItem());
         }
         return true;

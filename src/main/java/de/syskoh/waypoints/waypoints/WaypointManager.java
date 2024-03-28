@@ -16,9 +16,12 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -57,10 +60,12 @@ public class WaypointManager implements Listener {
      */
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
-        for (UserWaypoints waypoint : userWaypoints) {
+        Iterator<UserWaypoints> iter = userWaypoints.iterator();
+        while (iter.hasNext()){
+            UserWaypoints waypoint = iter.next();
             if (waypoint.getPlayer().equals(event.getPlayer())) {
                 waypoint.saveWaypoints();
-                userWaypoints.remove(waypoint);
+                iter.remove();
             }
         }
     }
@@ -75,6 +80,10 @@ public class WaypointManager implements Listener {
     public void onPlayerSneak(PlayerToggleSneakEvent e) {
         Player p = e.getPlayer();
         PlayerInventory inv = p.getInventory();
+
+        if(!p.hasPermission("waypoints.use")){
+            return;
+        }
 
 
         // if the player stopped sneaking, remove all armorstands from the player
@@ -103,6 +112,11 @@ public class WaypointManager implements Listener {
 
             // Spawns an armorstand in the direction of the waypoint at a distance of 5 blocks
             for (Waypoint waypoint : uw.getWaypoints()) {
+
+                if(!waypoint.getLocation().getWorld().equals(p.getLocation().getWorld())){
+                    continue;
+                }
+
                 Vector vec = waypoint.getLocation().toVector().subtract(p.getEyeLocation().toVector()).normalize().multiply(5);
 
                 //p.getEyeLocation().add(vec);
@@ -113,9 +127,9 @@ public class WaypointManager implements Listener {
                 armorStandDisplayLabel.setCustomNameVisible(true);
                 armorStandDisplayLabel.setGravity(false);
                 armorStandDisplayLabel.setInvulnerable(true);
+                armorStandDisplayLabel.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999,0, true, false));
 
                 //armorStandDisplayLabel.teleport(p.getLocation().add(vec));
-
 
                 ArmorStand armorStandDisplayItem = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(vec.clone().multiply(1.2)).add(0, 1.55, 0), EntityType.ARMOR_STAND);
                 armorStandDisplayItem.setInvisible(true);
@@ -123,7 +137,7 @@ public class WaypointManager implements Listener {
                 armorStandDisplayItem.setSmall(true);
                 armorStandDisplayItem.getEquipment().setHelmet(waypoint.getStack());
                 armorStandDisplayItem.setInvulnerable(true);
-
+                armorStandDisplayItem.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999,0, true, false));
 
                 ArmorStand armorStandDisplayDistance = (ArmorStand) p.getWorld().spawnEntity(p.getLocation().add(vec).add(0, -0.3, 0), EntityType.ARMOR_STAND);
                 armorStandDisplayDistance.setInvisible(true);
@@ -131,7 +145,7 @@ public class WaypointManager implements Listener {
                 armorStandDisplayDistance.setCustomNameVisible(true);
                 armorStandDisplayDistance.setGravity(false);
                 armorStandDisplayDistance.setInvulnerable(true);
-
+                armorStandDisplayDistance.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999,0, true, false));
 
                 waypointArmorStands.put(armorStandDisplayLabel, p.getName());
                 waypointArmorStands.put(armorStandDisplayItem, p.getName());

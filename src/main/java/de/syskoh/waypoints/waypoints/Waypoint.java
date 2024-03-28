@@ -3,7 +3,6 @@ package de.syskoh.waypoints.waypoints;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-
 /**
  * Represents a single waypoint
  */

@@ -20,7 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public final class Waypoints extends JavaPlugin {
 
-
     private static Waypoints instance;
     private ItemStack waypointItem;
     private WaypointManager waypointManager;
@@ -31,7 +30,7 @@ public final class Waypoints extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        prepareItem();
+        prepareWaypointItem();
 
         waypointManager = new WaypointManager();
         menuManager = new MenuManager();
@@ -57,7 +56,7 @@ public final class Waypoints extends JavaPlugin {
     /**
      * Generates the waypoint item and registers a crafting recipe for it
      */
-    private void prepareItem() {
+    private void prepareWaypointItem() {
         waypointItem = new ItemStack(Material.COMPASS);
         ItemMeta meta = waypointItem.getItemMeta();
         meta.setDisplayName(ChatColor.YELLOW + "Waypoint Manager");

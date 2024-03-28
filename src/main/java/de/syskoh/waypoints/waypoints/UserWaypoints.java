@@ -78,7 +78,6 @@ public class UserWaypoints {
      * Saves the waypoints to the config file
      * Foramt: "Waypoint.(UUID).(waypoint-label).(Data)"
      */
-
     public void saveWaypoints() {
         for (Waypoint wa : waypoints) {
             String prefix = "Waypoint." + player.getUniqueId().toString() + "." + wa.getLabel() + ".";
@@ -92,37 +91,51 @@ public class UserWaypoints {
 
     /**
      * Returns a list of waypoints
-     *
      * @return Waypoints
      */
-
     public LinkedList<Waypoint> getWaypoints() {
         return waypoints;
     }
 
     /**
      * Sets a config variable and saves it
-     *
      * @param path the config path
      * @param o    the value of the config path
      */
-
     public void set(String path, Object o) {
         w.getConfig().set(path, o);
         w.saveConfig();
     }
 
 
+    /**
+     * Adds a new waypoint to the collection
+     * @param label The name of the waypoint
+     * @param loc The Location of the waypoint
+     * @param material Which Material should spawn with the waypoint
+     */
     public void addUserWaypoint(String label, Location loc, Material material){
         waypoints.add(new Waypoint(label, loc, new ItemStack(material)));
         saveWaypoints();
     }
 
     /**
-     * Returns the player
-     * @return The player
+     * @return The player this class represents
      */
     public Player getPlayer() {
         return player;
+    }
+
+
+    /**
+     * removes a waypoint
+     * @param wp The waypoint to remove
+     */
+    public void removeUserWaypoint(Waypoint wp) {
+        String prefix = "Waypoint." + player.getUniqueId().toString() + "." + wp.getLabel();
+        Waypoints.getInstance().getConfig().set(prefix, null);
+        Waypoints.getInstance().saveConfig();
+        waypoints.remove(wp);
+        saveWaypoints();
     }
 }

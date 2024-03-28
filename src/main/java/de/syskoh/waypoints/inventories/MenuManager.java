@@ -17,7 +17,7 @@ public class MenuManager implements Listener {
     public void onRightClick(PlayerInteractEvent event) {
         Player p = event.getPlayer();
 
-        if (!Util.isPlayerHoldingWaypointItem(p) || !p.isSneaking()) {
+        if (!p.hasPermission("waypoints.menu") || !Util.isPlayerHoldingWaypointItem(p) || !p.isSneaking()) {
             return;
         }
 
